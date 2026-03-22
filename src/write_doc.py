@@ -154,6 +154,25 @@ def _short(name, max_len=100):
     return name[:max_len]
 
 
+def find_unique_title(drive, folder_id, base_title):
+    """Return base_title, or base_title + ' (2)'/'(3)'/... if a doc with that name already exists."""
+    if not folder_id:
+        return base_title
+    title = base_title
+    suffix = 2
+    while True:
+        escaped = title.replace("'", "\\'")
+        q = (
+            f"name='{escaped}' and '{folder_id}' in parents"
+            f" and trashed=false and mimeType='application/vnd.google-apps.document'"
+        )
+        results = drive.files().list(q=q, fields="files(id)", pageSize=1).execute()
+        if not results.get("files"):
+            return title
+        title = f"{base_title} ({suffix})"
+        suffix += 1
+
+
 # ── State ─────────────────────────────────────────────────────────────────────
 
 def save_state(last_completed):
@@ -170,6 +189,9 @@ def main():
     parser.add_argument("--plan-a", required=True)
     parser.add_argument("--plan-b", required=True)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--title", default=None,
+                        help="Human-readable doc title override (e.g. 'Unit 2: Lessons 5 and 6 (Fractions)'). "
+                             "If omitted, falls back to the date-based default.")
     args = parser.parse_args()
 
     load_dotenv(PROJECT_ROOT / ".env")
@@ -182,13 +204,13 @@ def main():
     plan_b = Path(args.plan_b).read_text()
 
     today = date.today().strftime("%Y-%m-%d")
-    title = f"{today} \u2014 {args.tab_a} & {args.tab_b}"
+    base_title = args.title if args.title else f"{today} \u2014 {args.tab_a} & {args.tab_b}"
 
     folder_id = os.getenv("GOOGLE_DRIVE_FOLDER_ID", "").strip()
     dry_run   = args.dry_run or not TOKEN_FILE.exists()
 
     if dry_run:
-        print(f"\n[DRY RUN] Would create doc: {title}")
+        print(f"\n[DRY RUN] Would create doc: {base_title}")
         print("\n--- LESSON A ---\n")
         print(plan_a)
         print("\n--- LESSON B ---\n")
@@ -199,6 +221,9 @@ def main():
             segments_a = parse_lesson(plan_a)
             segments_b = parse_lesson(plan_b)
             docs, drive = build_services()
+            title = find_unique_title(drive, folder_id, base_title)
+            if title != base_title:
+                print(f"[info] Doc title '{base_title}' already exists — using '{title}'", file=sys.stderr)
             doc_url = create_doc(
                 docs, drive, folder_id, title,
                 args.tab_a, args.tab_b,
