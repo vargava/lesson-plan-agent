@@ -111,14 +111,24 @@ Save the output to `tmp/lesson_a.txt` (create the `tmp/` directory if it doesn't
 Same as Step 4 but using `data_b`. Save to `tmp/lesson_b.txt`.
 
 ### Step 6 — Write the Google Doc
+
+Before running the script, construct a human-readable `--title` from the lesson content:
+- **Unit number** — extract from the tab name prefix (e.g. `L2` → `Unit 2`), confirm against lesson content
+- **Lesson numbers** — look for lesson number labels in the sheet data (e.g. "Lesson 5"); cross-reference the Unit Plan tab if ambiguous
+- **Topic name** — from the unit topic in the lesson content or Unit Plan tab (e.g. "Fractions")
+- Format: `Unit {N}: Lessons {X} and {Y} ({topic})`
+
 ```bash
 python src/write_doc.py \
   --tab-a "<tab_a from Step 1>" \
   --tab-b "<tab_b from Step 1>" \
   --plan-a tmp/lesson_a.txt \
-  --plan-b tmp/lesson_b.txt
+  --plan-b tmp/lesson_b.txt \
+  --title "Unit 2: Lessons 5 and 6 (Fractions)"
 ```
 If `dry_run` was true in Step 1, add `--dry-run` flag.
+
+If a doc with the same title already exists in the Drive folder, `write_doc.py` will automatically append a suffix (e.g. `(2)`) and log a warning to stderr.
 
 ### Step 7 — Report
 Print a summary:
