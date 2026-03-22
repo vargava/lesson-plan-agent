@@ -138,6 +138,74 @@ Print a summary:
 
 ---
 
+## Workflow: Review Assessor Feedback
+
+When asked to review assessor feedback and update the skill, follow these steps exactly:
+
+### Step 1 — Accept input
+The operator provides one or more doc names or Drive URLs to review. Multiple inputs are supported.
+
+- If a **Drive URL** is given, extract the file ID from the path segment `/d/<fileId>/`.
+- If a **doc name** is given, search the configured Drive folder for a matching file:
+  ```python
+  drive.files().list(
+      q=f"'{folder_id}' in parents and name contains '{name}' and trashed=false",
+      fields="files(id,name)"
+  )
+  ```
+
+### Step 2 — Fetch comments
+
+For each doc, run the following inline Python using `credentials/token.json` (same auth pattern as `write_doc.py`):
+
+```python
+import json
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
+creds = Credentials.from_authorized_user_file("credentials/token.json")
+drive = build("drive", "v3", credentials=creds)
+
+comments = drive.comments().list(
+    fileId="<doc_id>",
+    fields="comments(id,content,resolved,quotedFileContent)",
+    includeDeleted=False
+).execute().get("comments", [])
+
+open_comments = [c for c in comments if not c.get("resolved")]
+print(json.dumps(open_comments, indent=2))
+```
+
+Print all unresolved comments. If there are no unresolved comments, report that to the operator and stop.
+
+### Step 3 — Interpret comments
+
+Before editing anything, state for each comment:
+- The quoted text or context it references (if any)
+- Which section of SKILL.md it maps to
+- The specific instruction change it implies
+
+This gives the operator a chance to correct your interpretation before you edit SKILL.md.
+
+### Step 4 — Update SKILL.md
+
+Edit `SKILL.md` to incorporate the feedback as durable instructions. Rules:
+- Write in the existing SKILL.md voice — clear, direct, instructional
+- Do not add "per assessor feedback" or similar annotations; write as if the instruction was always there
+- Place each change in the section it naturally belongs to
+- Do not remove or contradict any existing instruction unless the feedback explicitly supersedes it
+
+Read SKILL.md from disk before editing — never rely on memory of its contents.
+
+### Step 5 — Report
+
+Print a summary:
+- Doc(s) reviewed
+- Number of unresolved comments found
+- For each comment: a one-line description of the change made to SKILL.md, and which section was affected
+
+---
+
 ## Key Constraints
 - SKILL.md is the source of truth — read it fresh from disk every run, never rely on memory of its contents
 - Credentials folder is never committed
