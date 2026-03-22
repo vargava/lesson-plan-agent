@@ -61,7 +61,7 @@ Write 1–3 clear, measurable objectives. Each objective must:
 **Inline notes:**
 - [EN] — Objectives as written
 - [ES] — Restate objectives in Spanish. Do not translate mechanically. Write them as a Spanish-speaking teacher would naturally phrase them for their students.
-- [MX] — Note any scaffolding language that helps bridge objectives for mixed proficiency (e.g., bilingual sentence starters, visual anchors)
+- [MX] — Post both English and Spanish objectives side by side (as they would appear on the board). Then write one sentence anchor per objective — a bilingual fill-in-the-blank stem that distills the core mathematical takeaway of that objective (e.g., "When I add a negative number, I move _____ on the number line." / "Cuando sumo un número negativo, me muevo _____ en la recta numérica."). These anchors should be memorable, mathematically precise, and usable by students across proficiency levels.
 
 ---
 
@@ -92,11 +92,17 @@ Structure the 75 minutes explicitly. Label each block with its time allocation. 
 
 | Block | Purpose | Default Time |
 |---|---|---|
-| Warm-Up | Activate prior knowledge, surface misconceptions | 10 min |
+| Do Now | Activate prior knowledge, preview today's concept | 10 min |
 | Concept Introduction | Connect math to real-world context; introduce vocabulary | 15 min |
 | Guided Practice | Teacher-led worked examples with student participation | 20 min |
 | Independent / Partner Practice | Students apply the concept | 20 min |
 | Exit Ticket | Formative assessment | 10 min |
+
+**Do Now format (required):** Write exactly three items for the Do Now prompt — do not use the previous lesson's exit ticket as the warm-up activity:
+1. Two mathematical equations or prompts that require students to use the knowledge and processes taught in the previous lesson
+2. One equation or exercise that previews a key skill or concept from today's lesson
+
+Write the actual Do Now problems in full, not descriptions of them. Students should be able to work on these independently and silently as they enter the room.
 
 For **each block**, write:
 - What the teacher does
@@ -163,3 +169,8 @@ Write the lesson plan in the voice of an experienced instructional coach writing
 
 ## Iteration Note
 This skill is run once per week, two lessons per run. The agent does not need to track which lessons were last run — that is handled by the operator. Each run should be treated as a fresh, standalone task with the two lesson tabs provided as input. Complete each lesson plan fully and independently before moving to the next.
+
+---
+
+## Feedback & Updates
+This skill is updated via the Assessor Feedback Workflow documented in CLAUDE.md. When an assessor leaves comments on an output Google Doc, run that workflow to fetch the comments, interpret the feedback, and incorporate it into this file as durable instructions.
