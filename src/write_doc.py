@@ -74,8 +74,9 @@ def _batch(docs, doc_id, requests):
         ).execute()
 
 
-def create_doc(docs, drive, folder_id, title, tab_a_name, tab_b_name,
-               segments_a, segments_b):
+def create_doc(docs, drive, folder_id, title, tab_a_name,
+               segments_a, tab_b_name=None, segments_b=None,
+               font_size=None, font_family=None):
     from format_doc import segments_to_requests
 
     # ── 1. Create empty doc (owned by the OAuth user) ──
@@ -96,7 +97,7 @@ def create_doc(docs, drive, folder_id, title, tab_a_name, tab_b_name,
     tabs     = doc_full.get("tabs", [])
     tab1_id  = tabs[0]["tabProperties"]["tabId"] if tabs else None
 
-    # ── 4. Rename tab 1 and create tab 2 ──
+    # ── 4. Rename tab 1; create tab 2 only if Lesson B is provided ──
     tab_requests = []
     if tab1_id:
         tab_requests.append({
@@ -105,47 +106,53 @@ def create_doc(docs, drive, folder_id, title, tab_a_name, tab_b_name,
                 "fields": "title",
             }
         })
-    tab_requests.append({
-        "createTab": {
-            "tabProperties": {"title": _short(tab_b_name), "index": 1},
-        }
-    })
+    if tab_b_name:
+        tab_requests.append({
+            "createTab": {
+                "tabProperties": {"title": _short(tab_b_name), "index": 1},
+            }
+        })
 
     tab2_id = None
-    try:
-        resp = docs.documents().batchUpdate(
-            documentId=doc_id, body={"requests": tab_requests}
-        ).execute()
-        for reply in resp.get("replies", []):
-            if "createTab" in reply:
-                tab2_id = reply["createTab"]["tabProperties"]["tabId"]
-    except Exception as e:
-        print(f"[warn] Tab setup partial failure: {e}", file=sys.stderr)
+    if tab_requests:
+        try:
+            resp = docs.documents().batchUpdate(
+                documentId=doc_id, body={"requests": tab_requests}
+            ).execute()
+            for reply in resp.get("replies", []):
+                if "createTab" in reply:
+                    tab2_id = reply["createTab"]["tabProperties"]["tabId"]
+        except Exception as e:
+            print(f"[warn] Tab setup partial failure: {e}", file=sys.stderr)
 
     # ── 5. Insert and format Lesson A (tab 1) ──
-    ins_a, fmt_a = segments_to_requests(segments_a, tab_id=tab1_id, insert_at=1)
+    ins_a, fmt_a = segments_to_requests(segments_a, tab_id=tab1_id, insert_at=1,
+                                        font_size=font_size, font_family=font_family)
     _batch(docs, doc_id, ins_a)
     _batch(docs, doc_id, fmt_a)
 
-    # ── 6. Insert and format Lesson B ──
-    if tab2_id:
-        ins_b, fmt_b = segments_to_requests(segments_b, tab_id=tab2_id, insert_at=1)
-        _batch(docs, doc_id, ins_b)
-        _batch(docs, doc_id, fmt_b)
-    else:
-        # Tabs not available: insert lesson B after a page break in the same tab
-        text_a   = "".join(s.text for s in segments_a)
-        pb_index = len(text_a)  # last valid insert position (segment end is exclusive)
-        loc      = {"index": pb_index}
-        if tab1_id:
-            loc["tabId"] = tab1_id
-        _batch(docs, doc_id, [{"insertText": {"location": loc, "text": "\f"}}])
+    # ── 6. Insert and format Lesson B (only if provided) ──
+    if segments_b is not None:
+        if tab2_id:
+            ins_b, fmt_b = segments_to_requests(segments_b, tab_id=tab2_id, insert_at=1,
+                                                font_size=font_size, font_family=font_family)
+            _batch(docs, doc_id, ins_b)
+            _batch(docs, doc_id, fmt_b)
+        else:
+            # Tabs not available: insert lesson B after a page break in the same tab
+            text_a   = "".join(s.text for s in segments_a)
+            pb_index = len(text_a)  # last valid insert position (segment end is exclusive)
+            loc      = {"index": pb_index}
+            if tab1_id:
+                loc["tabId"] = tab1_id
+            _batch(docs, doc_id, [{"insertText": {"location": loc, "text": "\f"}}])
 
-        ins_b, fmt_b = segments_to_requests(
-            segments_b, tab_id=tab1_id, insert_at=pb_index + 1
-        )
-        _batch(docs, doc_id, ins_b)
-        _batch(docs, doc_id, fmt_b)
+            ins_b, fmt_b = segments_to_requests(
+                segments_b, tab_id=tab1_id, insert_at=pb_index + 1,
+                font_size=font_size, font_family=font_family
+            )
+            _batch(docs, doc_id, ins_b)
+            _batch(docs, doc_id, fmt_b)
 
     return f"https://docs.google.com/document/d/{doc_id}/edit"
 
@@ -185,13 +192,19 @@ def save_state(last_completed):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tab-a",  required=True)
-    parser.add_argument("--tab-b",  required=True)
+    parser.add_argument("--tab-b",  required=False, default=None)
     parser.add_argument("--plan-a", required=True)
-    parser.add_argument("--plan-b", required=True)
+    parser.add_argument("--plan-b", required=False, default=None)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--title", default=None,
                         help="Human-readable doc title override (e.g. 'Unit 2: Lessons 5 and 6 (Fractions)'). "
                              "If omitted, falls back to the date-based default.")
+    parser.add_argument("--folder-id", default=None,
+                        help="Override GOOGLE_DRIVE_FOLDER_ID for this doc.")
+    parser.add_argument("--font-size", type=int, default=None,
+                        help="Apply a fixed font size (pt) to all content, e.g. 14 for worksheets.")
+    parser.add_argument("--font-family", default=None,
+                        help="Apply a fixed font family to all content, e.g. Arial for worksheets.")
     args = parser.parse_args()
 
     load_dotenv(PROJECT_ROOT / ".env")
@@ -201,39 +214,46 @@ def main():
     from format_doc import parse_lesson
 
     plan_a = Path(args.plan_a).read_text()
-    plan_b = Path(args.plan_b).read_text()
+    plan_b = Path(args.plan_b).read_text() if args.plan_b else None
 
     today = date.today().strftime("%Y-%m-%d")
-    base_title = args.title if args.title else f"{today} \u2014 {args.tab_a} & {args.tab_b}"
+    if args.title:
+        base_title = args.title
+    elif args.tab_b:
+        base_title = f"{today} \u2014 {args.tab_a} & {args.tab_b}"
+    else:
+        base_title = f"{today} \u2014 {args.tab_a}"
 
-    folder_id = os.getenv("GOOGLE_DRIVE_FOLDER_ID", "").strip()
+    folder_id = args.folder_id or os.getenv("GOOGLE_DRIVE_FOLDER_ID", "").strip()
     dry_run   = args.dry_run or not TOKEN_FILE.exists()
 
     if dry_run:
         print(f"\n[DRY RUN] Would create doc: {base_title}")
         print("\n--- LESSON A ---\n")
         print(plan_a)
-        print("\n--- LESSON B ---\n")
-        print(plan_b)
+        if plan_b:
+            print("\n--- LESSON B ---\n")
+            print(plan_b)
         doc_url = "[dry-run]"
     else:
         try:
             segments_a = parse_lesson(plan_a)
-            segments_b = parse_lesson(plan_b)
+            segments_b = parse_lesson(plan_b) if plan_b else None
             docs, drive = build_services()
             title = find_unique_title(drive, folder_id, base_title)
             if title != base_title:
                 print(f"[info] Doc title '{base_title}' already exists — using '{title}'", file=sys.stderr)
             doc_url = create_doc(
                 docs, drive, folder_id, title,
-                args.tab_a, args.tab_b,
-                segments_a, segments_b,
+                args.tab_a, segments_a,
+                tab_b_name=args.tab_b, segments_b=segments_b,
+                font_size=args.font_size, font_family=args.font_family,
             )
         except Exception as e:
             print(f"ERROR writing Google Doc: {e}", file=sys.stderr)
             sys.exit(1)
 
-    if not dry_run:
+    if not dry_run and args.tab_b:
         save_state(args.tab_b)
 
     print(doc_url)

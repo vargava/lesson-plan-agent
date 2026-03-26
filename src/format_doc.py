@@ -184,7 +184,8 @@ def _rng(start, end, tab_id=None):
         r["tabId"] = tab_id
     return r
 
-def segments_to_requests(segments, tab_id=None, insert_at=1):
+def segments_to_requests(segments, tab_id=None, insert_at=1,
+                          font_size=None, font_family=None):
     """
     Convert a list of Seg objects into two lists of Docs API requests:
       insert_reqs  — a single insertText with all content
@@ -192,6 +193,9 @@ def segments_to_requests(segments, tab_id=None, insert_at=1):
 
     Caller should execute insert_reqs first, then format_reqs, so that
     indices remain valid.
+
+    font_size and font_family (optional) apply to every segment — use for
+    worksheet docs that require a specific typeface (e.g. 14pt Arial).
     """
     full_text = "".join(s.text for s in segments)
 
@@ -244,6 +248,13 @@ def segments_to_requests(segments, tab_id=None, insert_at=1):
                 "color": {"rgbColor": seg.color}
             }
             fields.append("foregroundColor")
+
+        if font_size:
+            text_style["fontSize"] = {"magnitude": font_size, "unit": "PT"}
+            fields.append("fontSize")
+        if font_family:
+            text_style["weightedFontFamily"] = {"fontFamily": font_family}
+            fields.append("weightedFontFamily")
 
         if text_style:
             format_reqs.append({

@@ -72,7 +72,7 @@ List all math vocabulary terms that are essential to this lesson. For each term:
 - Note how and when the term will be introduced during the lesson (not just listed at the start and forgotten)
 
 **Inline notes:**
-- [ES] — Provide the Spanish equivalent term and a student-friendly definition in Spanish. Flag any terms that are false cognates or commonly confused in translation.
+- [ES] — Provide the Spanish equivalent term and a student-friendly definition written entirely in Spanish — not in English. Do not write "In English, this means..." or include an English gloss alongside the Spanish. Flag any terms that are false cognates or commonly confused in translation.
 - [MX] — Note which terms benefit from a visual, gesture, or graphic organizer to support mixed proficiency learners.
 
 ---
@@ -114,8 +114,24 @@ For **each block**, write:
 - [ES] — Describe how the instruction is delivered or modified in Spanish. This is not a translation of the English instruction. It should reflect how a skilled bilingual math teacher would actually run this block — including Spanish mathematical language, culturally relevant examples where appropriate, and language scaffolds like sentence frames or word walls.
 - [MX] — Describe specific strategies for the mixed proficiency context. This classroom has students at different language levels in the same room. Note grouping strategies, tiered question prompts, visual supports, or peer language modeling techniques.
 
+**Language completeness requirement:** Every discussion prompt, debrief question, and teacher question written in an [EN] block must have corresponding [ES] and [MX] versions in the same time block. No block may contain discussion prompts or teacher questions only in [EN]. If [EN] has three discussion questions, [ES] and [MX] must each address all three — phrased appropriately for their respective context, not translated word-for-word.
+
+#### Board Instructions (required in Independent / Partner Practice block)
+Every Independent/Partner Practice block must begin with a "Board Instructions" item: the exact text the teacher writes on the board or wall for students to reference during work time. Write it as literal board text, not a description of what to write (e.g., "Read 3 times. Solve 3 ways. Check with a partner." — not "Tell students to read carefully"). This text must be specific to the lesson's activity, not generic.
+
+#### Word Problem Scaffolding (required when the lesson includes word problems)
+When the lesson includes word problems in any block, the teacher script for that block must include explicit three-reads protocol guidance:
+1. **First read** — What is happening? (situation only, no numbers)
+2. **Second read** — What quantities and units appear? (numbers, units, relationships)
+3. **Third read** — What are you being asked to find?
+
+The script must also include the exact teacher language to use when a student skips the protocol and jumps to computation (e.g., "Cover your paper. Tell me in your own words: what is happening in this problem?"). Write the intervention line word-for-word — do not summarize it.
+
 #### Real-World Connection (required in Concept Introduction block)
 Every lesson must ground the math concept in a real-world context that is relevant and relatable to middle school students (ages 11–14). This is not a word problem bolted on at the end — it is the entry point for why the math matters. Choose contexts that are culturally neutral or broadly relatable (e.g., sports, food, money, social media, distances, time).
+
+#### Worked Example (required in Guided Practice block)
+Before transitioning to group or partner work within Guided Practice, include at least one problem worked out step-by-step in full — every step written explicitly, with the teacher narration for each step. Do not summarize steps or write "solve as shown." A substitute teacher picking up this lesson plan must be able to work through the example using only what is written here.
 
 #### Anticipated Misconceptions (required in Guided Practice block)
 Identify 2–3 specific places where students commonly get confused or make errors on this concept. For each:
@@ -139,6 +155,37 @@ Requirements:
 
 ---
 
+### 7. Extension Worksheet
+
+Each lesson produces two separate worksheet outputs — a student copy and an answer key. Both are standalone, printable documents.
+
+#### Student Worksheet (save to `tmp/worksheet_X.txt`)
+
+Write the actual worksheet in full, ready to print. Requirements:
+
+- Header row: `Name: ___________________________  Date: __________  Period: ___`
+- One short Directions line (e.g. "Show your work. For word problems, write a complete sentence answer.")
+- 8–10 numbered problems, arranged in increasing difficulty
+- 2–3 word problems that require multi-step reasoning
+- 1–2 challenge problems that push toward the next concept in the unit sequence, clearly marked (e.g., "Challenge:")
+- Use only vocabulary and operations introduced in this lesson or prior lessons
+- **No labeled answer areas** — do not add boxes or lines labeled "Equation:", "Solution:", "Answer:", etc. Leave generous blank lines below each problem for students to work freely
+- **No sub-section headers** within the problem set — the worksheet reads as a clean, print-ready handout, not a structured document
+
+#### Answer Key (save to `tmp/worksheet_X_key.txt`)
+
+Write the same problem set with answers filled in. Requirements:
+
+- No student header row
+- Include the answer for every problem
+- For word problems and challenge problems, include a brief worked solution (2–4 lines)
+- Label the document: `Answer Key — [Lesson title]`
+
+#### Output format note
+Worksheet docs (student copy and answer key) are written with 14pt Arial font. When calling `write_doc.py` for worksheets, always pass `--font-size 14 --font-family Arial`.
+
+---
+
 ## Quality Standards
 
 The agent must self-evaluate the lesson plan against these standards before finalizing output. Do not produce the document if any of the following are not met.
@@ -152,6 +199,7 @@ The agent must self-evaluate the lesson plan against these standards before fina
 - [ ] [ES] content reflects authentic Spanish-language math instruction — not machine translation or word-for-word English conversion
 - [ ] [MX] content treats the mixed proficiency classroom as its own distinct instructional context, not a copy of either EN or ES
 - [ ] Pacing blocks are labeled with explicit time allocations that sum to exactly 75 minutes
+- [ ] Extension worksheet (student copy) contains 8–10 complete, numbered problems including at least 2 word problems and 1 challenge problem; answer key is generated as a separate file
 
 ### Common failure modes to actively avoid:
 - Objectives that use vague verbs like "understand," "appreciate," or "explore" without a measurable action
