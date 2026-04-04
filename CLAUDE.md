@@ -121,16 +121,27 @@ When asked to run the lesson plan workflow, follow these steps exactly:
 
 ### Step 1 — Fetch lesson data
 
-**Normal run** (picks next two lessons after the last completed one in state.json):
+**Normal run** (picks the next single lesson after the last completed one in state.json):
 ```bash
 python src/fetch_lessons.py
+```
+
+**Run two lessons in one pass** (picks two consecutive lessons):
+```bash
+python src/fetch_lessons.py --two
 ```
 
 **Re-run a specific lesson** (overrides state.json; use when re-generating a specific lesson):
 ```bash
 python src/fetch_lessons.py --start-from "L10 326 & 327 (ThF)"
 ```
-When `--start-from` is used, `tab_b` is the next tab in sequence, or `null` if the specified tab is the last lesson in the unit. In that case, skip any Steps that reference tab_b / lesson B (subagent B, subagent D, Steps 7–10 and Steps 12 for lesson B, and the combined doc will be single-lesson only).
+
+**Re-run two lessons starting from a specific tab:**
+```bash
+python src/fetch_lessons.py --start-from "L10 326 & 327 (ThF)" --two
+```
+
+By default `tab_b` is `null` (single-lesson run). When `tab_b` is `null`, skip all Steps that reference lesson B: subagent B, subagent D, Steps 7–10, Step 12, and the combined doc will be single-lesson only. `write_doc.py` in Step 6 will update state.json to `tab_a`.
 
 Parse the JSON output. It contains:
 - `tab_a`, `tab_b` — lesson tab names (`tab_b` may be null)
