@@ -1,5 +1,5 @@
 """
-fetch_lessons.py — Reads the next two lesson tabs from Google Sheets and prints JSON to stdout.
+fetch_lessons.py — Reads the next lesson tab (or two with --two) from Google Sheets and prints JSON to stdout.
 
 Claude Code runs this script, parses the output, and generates lesson plans directly.
 
@@ -16,7 +16,8 @@ Output (stdout, JSON):
 
 Flags:
   --start-from <tab_name>   Override state.json: use this tab as tab_a (for re-runs).
-                            tab_b is the next tab in sequence, or null if tab_a is last.
+                            tab_b is null unless --two is also passed.
+  --two                     Fetch two consecutive lessons instead of one.
 
 Exit codes:
   0 — success
@@ -113,7 +114,7 @@ def read_lesson_tab(service, sheet_id, tab_name):
     return result.get("values", [])
 
 
-def pick_next_two(all_tabs, last_completed):
+def pick_next(all_tabs, last_completed, two=False):
     if not all_tabs:
         raise ValueError("No lesson tabs found in the spreadsheet.")
     if last_completed is None or last_completed not in all_tabs:
@@ -127,30 +128,36 @@ def pick_next_two(all_tabs, last_completed):
             "All lessons may be processed — reset state.json to restart."
         )
     tab_a = remaining[0]
-    tab_b = remaining[1] if len(remaining) >= 2 else None
+    tab_b = remaining[1] if two and len(remaining) >= 2 else None
     return tab_a, tab_b
 
 
-def pick_from(all_tabs, start_tab):
-    """For re-runs: use start_tab as tab_a, next tab as tab_b (or None if last)."""
+def pick_from(all_tabs, start_tab, two=False):
+    """For re-runs: use start_tab as tab_a. tab_b is next in sequence only if --two is set."""
     if start_tab not in all_tabs:
         raise ValueError(
             f"Tab '{start_tab}' not found in the spreadsheet. "
             f"Available tabs: {all_tabs}"
         )
     idx = all_tabs.index(start_tab)
-    tab_b = all_tabs[idx + 1] if idx + 1 < len(all_tabs) else None
+    tab_b = all_tabs[idx + 1] if two and idx + 1 < len(all_tabs) else None
     return start_tab, tab_b
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Fetch next two lesson tabs from Google Sheets.")
+    parser = argparse.ArgumentParser(description="Fetch the next lesson tab(s) from Google Sheets.")
     parser.add_argument(
         "--start-from",
         metavar="TAB_NAME",
         default=None,
         help="Override state.json: use this tab as tab_a (for re-runs). "
              "tab_b is the next tab in sequence, or null if tab_a is last.",
+    )
+    parser.add_argument(
+        "--two",
+        action="store_true",
+        default=False,
+        help="Fetch two lessons instead of one. tab_b will be the lesson after tab_a.",
     )
     args = parser.parse_args()
 
@@ -191,9 +198,9 @@ def main():
             last_completed = state.get("last_completed_lesson")
 
             if args.start_from:
-                tab_a, tab_b = pick_from(all_tabs, args.start_from)
+                tab_a, tab_b = pick_from(all_tabs, args.start_from, two=args.two)
             else:
-                tab_a, tab_b = pick_next_two(all_tabs, last_completed)
+                tab_a, tab_b = pick_next(all_tabs, last_completed, two=args.two)
 
             grid_a = read_lesson_tab(service, sheet_id, tab_a)
             grid_b = read_lesson_tab(service, sheet_id, tab_b) if tab_b else None

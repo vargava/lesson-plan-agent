@@ -121,16 +121,27 @@ When asked to run the lesson plan workflow, follow these steps exactly:
 
 ### Step 1 — Fetch lesson data
 
-**Normal run** (picks next two lessons after the last completed one in state.json):
+**Normal run** (picks the next single lesson after the last completed one in state.json):
 ```bash
 python src/fetch_lessons.py
+```
+
+**Run two lessons in one pass** (picks two consecutive lessons):
+```bash
+python src/fetch_lessons.py --two
 ```
 
 **Re-run a specific lesson** (overrides state.json; use when re-generating a specific lesson):
 ```bash
 python src/fetch_lessons.py --start-from "L10 326 & 327 (ThF)"
 ```
-When `--start-from` is used, `tab_b` is the next tab in sequence, or `null` if the specified tab is the last lesson in the unit. In that case, skip any Steps that reference tab_b / lesson B (subagent B, subagent D, Steps 7–10 and Steps 12 for lesson B, and the combined doc will be single-lesson only).
+
+**Re-run two lessons starting from a specific tab:**
+```bash
+python src/fetch_lessons.py --start-from "L10 326 & 327 (ThF)" --two
+```
+
+By default `tab_b` is `null` (single-lesson run). When `tab_b` is `null`, skip all Steps that reference lesson B: subagent B, subagent D, Steps 7–10, Step 12, and the combined doc will be single-lesson only. `write_doc.py` in Step 6 will update state.json to `tab_a`.
 
 Parse the JSON output. It contains:
 - `tab_a`, `tab_b` — lesson tab names (`tab_b` may be null)
@@ -142,8 +153,42 @@ Parse the JSON output. It contains:
 ### Step 2 — Read SKILL.md
 Read `SKILL.md` from disk. This is the instructional design framework — follow it exactly when generating lesson plans.
 
+### Step 2.5 — Discover and read reference documents
+
+Launch a **Reference Doc Discovery Subagent** using the Agent tool. This subagent reads supporting materials from Drive so the lesson-generating subagents can align their output to the actual classroom materials.
+
+**Subagent prompt** (include verbatim in the Agent tool call):
+
+> You are a reference document reader. Your job is to find and read lesson reference materials from Google Drive and return their contents.
+>
+> You have access to the Bash tool. Use the following inline Python pattern (OAuth credentials are at `credentials/token.json`, `.env` at project root) to find and read files.
+>
+> **Task:**
+> 1. Find the parent folder of the Google Sheet with ID `<sheet_id from Step 1>`:
+>    ```python
+>    file_meta = drive.files().get(fileId="<sheet_id>", fields="parents").execute()
+>    parent_id = file_meta["parents"][0]
+>    ```
+> 2. List all subfolders and files in that parent folder. Look for a folder named "Reference Docs" (case-insensitive). If not found, also search the immediate children for any folder whose name contains "reference", "materials", or "resources".
+> 3. If a Reference Docs folder is found, recursively list its contents:
+>    - Files at the top level (likely per-lesson ET files and worksheets)
+>    - An "assessments" subfolder (if present) — list its files but do not read them; just return their names and IDs
+> 4. Identify exit ticket (ET) files for lesson A (`<tab_a>`) and lesson B (`<tab_b>`): look for files whose names contain "ET" and match the lesson tab name or lesson number. Match flexibly (e.g. "PreReq A" matches "PreReqA", "Pre Req A", etc.).
+> 5. For each ET file found: if it is a Google Doc, export as plain text. If it is a PDF, download it to `/tmp/ref_et_a.pdf` (or `ref_et_b.pdf`) and use the Read tool to extract its text.
+> 6. Return a structured report with:
+>    - `reference_docs_folder_found`: true/false
+>    - `all_files`: list of (name, mimeType, id) for every file in the Reference Docs folder
+>    - `assessments_folder`: list of (name, id) for files in the assessments subfolder, or empty if not found
+>    - `et_a_content`: full text of the exit ticket for lesson A, or "not found"
+>    - `et_b_content`: full text of the exit ticket for lesson B, or "not found"
+>    - `other_notes`: anything else that seems relevant (e.g. standard sample task, checkpoint docs)
+
+Capture the subagent's report as `ref_docs_report`. Wait for the subagent to complete before Step 3.
+
+If `tab_b` is null (single-lesson re-run), instruct the subagent to skip finding ET B.
+
 ### Step 3 — Confirm your understanding of the sheet structure
-Before generating any lesson plans, briefly state your interpretation of the two lesson tabs — their place in the unit sequence, the standards covered, the lesson objective, and any vocabulary or materials called out in the Unit Plan tab. Flag any ambiguities you see in the raw cell data. This gives the operator a chance to correct your understanding before you write 8000 words.
+Before generating any lesson plans, briefly state your interpretation of the two lesson tabs — their place in the unit sequence, the standards covered, the lesson objective, and any vocabulary or materials called out in the Unit Plan tab. Include a summary of what was found in Step 2.5 (reference files available, whether ET files were found). Flag any ambiguities. This gives the operator a chance to correct your understanding before you write 8000 words.
 
 ### Step 4 — Generate lessons in parallel via subagents
 
@@ -155,9 +200,11 @@ After Step 3, launch **two subagents in parallel** using the Agent tool (both in
 - SKILL.md full content
 - `tab_a` and `data_a` from Step 1
 - Unit context summary from Step 3
-- Instructions: generate a complete publication-ready lesson plan per SKILL.md → write to `tmp/lesson_a.txt`; then generate the student worksheet per Section 7 → write to `tmp/worksheet_a.txt`; then generate the answer key → write to `tmp/worksheet_a_key.txt`. Create `tmp/` if it doesn't exist.
+- Reference doc context from Step 2.5: list of all reference files available, and the full text of the ET file for lesson A (if found). The ET file is the actual exit ticket worksheet students will receive — use it to ensure the lesson's exit ticket section and lesson body align directly to what the ET tests. Do not reproduce the ET verbatim; use it as a constraint on what the lesson must prepare students to do.
+- Instructions: generate a complete publication-ready lesson plan per SKILL.md → write to `tmp/lesson_a.txt`; then generate the student worksheet per Section 5 (Extension Worksheet) → write to `tmp/worksheet_a.txt`; then generate the answer key → write to `tmp/worksheet_a_key.txt`. Create `tmp/` if it doesn't exist.
 
 **Subagent B prompt** (same structure, using `tab_b` and `data_b`):
+- Include ET B content from Step 2.5 reference doc report
 - Write lesson plan to `tmp/lesson_b.txt`, worksheet to `tmp/worksheet_b.txt`, answer key to `tmp/worksheet_b_key.txt`.
 
 If `tab_b` is null (single-lesson re-run), launch only Subagent A.
