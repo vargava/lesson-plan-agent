@@ -96,7 +96,7 @@ Structure the 75 minutes explicitly. Label each block with its time allocation. 
 | Concept Introduction | Connect math to real-world context; introduce vocabulary | 15 min |
 | Guided Practice | Teacher-led worked examples with student participation | 20 min |
 | Independent / Partner Practice | Students apply the concept | 20 min |
-| Exit Ticket | Formative assessment | 10 min |
+| Summary + Exit Ticket | Closure questions then formative assessment | 10 min |
 
 **Do Now format (required):** Write exactly three items for the Do Now prompt — do not use the previous lesson's exit ticket as the warm-up activity:
 1. Two mathematical equations or prompts that require students to use the knowledge and processes taught in the previous lesson
@@ -138,6 +138,22 @@ Identify 2–3 specific places where students commonly get confused or make erro
 - Name the misconception
 - Explain why students tend to make this error
 - Describe what the teacher should say or do to address it in the moment
+
+#### Summary / Closure (required in Block 5)
+
+Block 5 is labeled "BLOCK 5 — SUMMARY + EXIT TICKET (10 minutes)" and opens with a 2-minute closure sequence before the exit ticket is distributed.
+
+The closure sequence must include:
+- A 1–2 sentence teacher wrap-up statement naming the key mathematical idea from today's lesson and explicitly bridging to the next lesson
+- 2–3 discussion questions for cold-calling that check conceptual understanding, not procedure (e.g., "When does dividing give a smaller result?" not "What is 10÷2?")
+
+Write the discussion questions in full — the exact words the teacher will say.
+
+**Inline notes:**
+- [ES] — Wrap-up statement and discussion questions in Spanish, written as a fluent Spanish-language teacher would say them
+- [MX] — Bilingual versions of the closure questions using the paired format established in Block 1
+
+Total block time remains 10 minutes (~2 minutes closure + ~8 minutes exit ticket).
 
 ---
 
@@ -199,6 +215,7 @@ The agent must self-evaluate the lesson plan against these standards before fina
 - [ ] [ES] content reflects authentic Spanish-language math instruction — not machine translation or word-for-word English conversion
 - [ ] [MX] content treats the mixed proficiency classroom as its own distinct instructional context, not a copy of either EN or ES
 - [ ] Pacing blocks are labeled with explicit time allocations that sum to exactly 75 minutes
+- [ ] Block 5 is labeled "SUMMARY + EXIT TICKET" and includes 2–3 closure discussion questions before the exit ticket is distributed
 - [ ] Extension worksheet (student copy) contains 8–10 complete, numbered problems including at least 2 word problems and 1 challenge problem; answer key is generated as a separate file
 
 ### Common failure modes to actively avoid:
