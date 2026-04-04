@@ -182,9 +182,27 @@ def find_unique_title(drive, folder_id, base_title):
 
 # ── State ─────────────────────────────────────────────────────────────────────
 
-def save_state(last_completed):
+def save_state(last_completed, sheet_id=None, unit_name=None):
+    state = {}
+    if STATE_FILE.exists():
+        try:
+            with open(STATE_FILE) as f:
+                state = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    if sheet_id:
+        sheets = state.setdefault("sheets", {})
+        entry = sheets.setdefault(sheet_id, {})
+        entry["last_completed_lesson"] = last_completed
+        if unit_name:
+            entry["unit_name"] = unit_name
+    else:
+        # Legacy flat format (no sheet_id provided)
+        state["last_completed_lesson"] = last_completed
+
     with open(STATE_FILE, "w") as f:
-        json.dump({"last_completed_lesson": last_completed}, f, indent=2)
+        json.dump(state, f, indent=2)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -205,6 +223,10 @@ def main():
                         help="Apply a fixed font size (pt) to all content, e.g. 14 for worksheets.")
     parser.add_argument("--font-family", default=None,
                         help="Apply a fixed font family to all content, e.g. Arial for worksheets.")
+    parser.add_argument("--sheet-id", default=None,
+                        help="Google Sheet ID — used to key state.json per unit.")
+    parser.add_argument("--unit-name", default=None,
+                        help="Human-readable unit name stored alongside state (e.g. 'Rational Numbers').")
     args = parser.parse_args()
 
     load_dotenv(PROJECT_ROOT / ".env")
@@ -254,7 +276,7 @@ def main():
             sys.exit(1)
 
     if not dry_run and args.tab_b:
-        save_state(args.tab_b)
+        save_state(args.tab_b, sheet_id=args.sheet_id, unit_name=args.unit_name)
 
     print(doc_url)
 

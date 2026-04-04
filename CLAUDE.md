@@ -17,12 +17,18 @@ Claude Code
   │     ├── generates Lesson B plan       → tmp/lesson_b.txt
   │     ├── generates Worksheet B         → tmp/worksheet_b.txt
   │     └── generates Answer Key B        → tmp/worksheet_b_key.txt
-  └── python src/write_doc.py (5 calls):
+  ├── [Subagent C — in parallel with D, launched after A completes]
+  │     └── generates Graphic Organizer A → tmp/organizer_a.txt
+  ├── [Subagent D — in parallel with C, launched after B completes]
+  │     └── generates Graphic Organizer B → tmp/organizer_b.txt
+  └── python src/write_doc.py (5 calls) + src/write_organizer.py (2 calls):
         ├── combined lesson doc (A + B)            → Lesson Plans/  — updates state.json
         ├── worksheet doc for Lesson A             → Worksheets/    — 14pt Arial
         ├── answer key doc for Lesson A            → Worksheets/    — 14pt Arial
         ├── worksheet doc for Lesson B             → Worksheets/    — 14pt Arial
-        └── answer key doc for Lesson B            → Worksheets/    — 14pt Arial
+        ├── answer key doc for Lesson B            → Worksheets/    — 14pt Arial
+        ├── graphic organizer doc for Lesson A     → Lesson Plans/
+        └── graphic organizer doc for Lesson B     → Lesson Plans/
               └── uses src/format_doc.py → parses text into Docs API batchUpdate requests
 ```
 
@@ -30,8 +36,10 @@ Claude Code
 - `src/fetch_lessons.py` — reads next two lesson tabs from Google Sheets, prints JSON to stdout
 - `src/write_doc.py` — creates a richly formatted Google Doc from two lesson plan text files
 - `src/format_doc.py` — parses lesson plan plain text into Google Docs API formatting requests
+- `src/write_organizer.py` — creates a table-layout Graphic Organizer Google Doc from a structured text file
 - `src/auth_setup.py` — one-time OAuth2 setup script; run once to generate `credentials/token.json`
 - `SKILL.md` — the full instructional design spec that drives lesson plan generation
+- `GRAPHIC_ORGANIZER_SKILL.md` — skill spec for organizer subagents C and D
 - `state.json` — tracks which lesson was last completed (auto-generated, never committed)
 - `credentials/` — Google credentials live here (never committed):
   - `service_account.json` — used by fetch_lessons.py to read Google Sheets
@@ -42,6 +50,7 @@ Claude Code
   - `lesson_a.txt`, `lesson_b.txt` — generated lesson plans
   - `worksheet_a.txt`, `worksheet_b.txt` — generated extension worksheets (student copy)
   - `worksheet_a_key.txt`, `worksheet_b_key.txt` — generated answer keys
+  - `organizer_a.txt`, `organizer_b.txt` — generated graphic organizers
 
 ## Environment Variables (.env)
 ```
@@ -90,8 +99,19 @@ Revisit when the API adds tab support.
 - The Google Sheet has one tab per lesson
 - Tab names encode order (e.g. "Week 12 - Lesson 5 - Ratios")
 - Tabs whose names contain "overview", "unit", "index", "contents", "summary", or "cover" are skipped
-- `state.json` stores `{"last_completed_lesson": "<tab name>"}` — missing file means start from tab 1
-- After a successful run, state.json is updated to the second lesson processed
+- `state.json` stores progress **per Google Sheet ID**, so multiple units are tracked independently:
+  ```json
+  {
+    "sheets": {
+      "<sheet_id>": {
+        "unit_name": "Rational Numbers",
+        "last_completed_lesson": "L9 323 & 324 (MT)"
+      }
+    }
+  }
+  ```
+- After a successful run, state.json is updated to the last lesson processed for that sheet
+- Use `--start-from "<tab_name>"` to re-run a specific lesson without touching state.json sequencing
 
 ---
 
@@ -100,13 +120,24 @@ Revisit when the API adds tab support.
 When asked to run the lesson plan workflow, follow these steps exactly:
 
 ### Step 1 — Fetch lesson data
+
+**Normal run** (picks next two lessons after the last completed one in state.json):
 ```bash
 python src/fetch_lessons.py
 ```
+
+**Re-run a specific lesson** (overrides state.json; use when re-generating a specific lesson):
+```bash
+python src/fetch_lessons.py --start-from "L10 326 & 327 (ThF)"
+```
+When `--start-from` is used, `tab_b` is the next tab in sequence, or `null` if the specified tab is the last lesson in the unit. In that case, skip any Steps that reference tab_b / lesson B (subagent B, subagent D, Steps 7–10 and Steps 12 for lesson B, and the combined doc will be single-lesson only).
+
 Parse the JSON output. It contains:
-- `tab_a`, `tab_b` — lesson tab names
-- `data_a`, `data_b` — raw lesson content as pipe-delimited cell grids (or sample text in dry-run)
+- `tab_a`, `tab_b` — lesson tab names (`tab_b` may be null)
+- `data_a`, `data_b` — raw lesson content as pipe-delimited cell grids (`data_b` may be null)
 - `dry_run` — boolean
+- `sheet_id` — Google Sheet ID (pass to `--sheet-id` in Step 6)
+- `unit_name` — spreadsheet title (pass to `--unit-name` in Step 6)
 
 ### Step 2 — Read SKILL.md
 Read `SKILL.md` from disk. This is the instructional design framework — follow it exactly when generating lesson plans.
@@ -129,7 +160,31 @@ After Step 3, launch **two subagents in parallel** using the Agent tool (both in
 **Subagent B prompt** (same structure, using `tab_b` and `data_b`):
 - Write lesson plan to `tmp/lesson_b.txt`, worksheet to `tmp/worksheet_b.txt`, answer key to `tmp/worksheet_b_key.txt`.
 
-Wait for both subagents to complete before proceeding.
+If `tab_b` is null (single-lesson re-run), launch only Subagent A.
+
+Wait for all launched subagents to complete before proceeding.
+
+### Step 4.5 — Generate Graphic Organizers in parallel via subagents
+
+After Step 4 completes, launch **two subagents in parallel** (Subagents C and D) using the Agent tool. These run after lesson generation because they require the completed lesson plan files as input.
+
+Read `GRAPHIC_ORGANIZER_SKILL.md` from disk before constructing the subagent prompts.
+
+**Subagent C prompt** (include verbatim in the Agent tool call):
+- Full contents of `GRAPHIC_ORGANIZER_SKILL.md`
+- `tab_a` and `data_a` from Step 1 (the raw lesson data)
+- Full contents of `tmp/lesson_a.txt` (the completed lesson plan)
+- Instructions: follow `GRAPHIC_ORGANIZER_SKILL.md` exactly; write output to `tmp/organizer_a.txt`. Create `tmp/` if it does not exist.
+
+**Subagent D prompt** (same structure):
+- Full contents of `GRAPHIC_ORGANIZER_SKILL.md`
+- `tab_b` and `data_b` from Step 1
+- Full contents of `tmp/lesson_b.txt`
+- Instructions: write output to `tmp/organizer_b.txt`.
+
+If `tab_b` is null (single-lesson re-run), launch only Subagent C.
+
+**Parallelism note:** Launch Subagents C and D **in the same message as Step 5** (Drive folder discovery). All three operations can run concurrently — wait for all to complete before Step 6.
 
 ### Step 5 — Discover output folder IDs
 
@@ -183,11 +238,14 @@ python src/write_doc.py \
   --plan-a tmp/lesson_a.txt \
   --plan-b tmp/lesson_b.txt \
   --folder-id "<lesson_plans_folder_id from Step 5>" \
+  --sheet-id "<sheet_id from Step 1>" \
+  --unit-name "<unit_name from Step 1>" \
   --title "Fractions : Lesson 5 and 6"
 ```
 If `dry_run` was true in Step 1, add `--dry-run` flag.
+If `tab_b` is null (single-lesson re-run), omit `--tab-b` and `--plan-b`.
 
-This call updates `state.json` to `tab_b`. If a doc with the same title already exists, `write_doc.py` will automatically append a suffix (e.g. `(2)`) and log a warning to stderr.
+This call updates `state.json` (keyed by `sheet_id`) to `tab_b` when `--tab-b` is provided. If a doc with the same title already exists, `write_doc.py` will automatically append a suffix (e.g. `(2)`) and log a warning to stderr.
 
 ### Step 7 — Write the Lesson A Extension Worksheet Doc
 
@@ -234,15 +292,43 @@ python src/write_doc.py \
   --title "{topic} : Lesson {Y} Extension Worksheet Answer Key"
 ```
 
-### Step 11 — Report
+### Step 11 — Write the Lesson A Graphic Organizer Doc
+
+Construct the `--title` as: `{topic} : Lesson {X} Graphic Organizer` (same topic and lesson number used in Step 6, with "Graphic Organizer" as the suffix).
+
+```bash
+python src/write_organizer.py \
+  --tab-a "<tab_a from Step 1>" \
+  --plan-a tmp/organizer_a.txt \
+  --folder-id "<lesson_plans_folder_id from Step 5>" \
+  --title "{topic} : Lesson {X} Graphic Organizer"
+```
+If `dry_run` was true in Step 1, add `--dry-run` flag.
+
+### Step 12 — Write the Lesson B Graphic Organizer Doc
+
+Skip this step if `tab_b` is null.
+
+```bash
+python src/write_organizer.py \
+  --tab-a "<tab_b from Step 1>" \
+  --plan-a tmp/organizer_b.txt \
+  --folder-id "<lesson_plans_folder_id from Step 5>" \
+  --title "{topic} : Lesson {Y} Graphic Organizer"
+```
+If `dry_run` was true in Step 1, add `--dry-run` flag.
+
+### Step 13 — Report
 Print a summary:
 - Lesson A tab name
-- Lesson B tab name
+- Lesson B tab name (if applicable)
 - Combined lesson plan doc URL
 - Lesson A worksheet doc URL
 - Lesson A answer key doc URL
-- Lesson B worksheet doc URL
-- Lesson B answer key doc URL
+- Lesson B worksheet doc URL (if applicable)
+- Lesson B answer key doc URL (if applicable)
+- Lesson A graphic organizer doc URL
+- Lesson B graphic organizer doc URL (if applicable)
 
 ---
 
@@ -320,5 +406,7 @@ Print a summary:
 - state.json lives at project root, created on first run if absent
 - fetch_lessons.py uses a service account; write_doc.py uses OAuth2 user credentials
 - Lesson generation is delegated to parallel subagents (one per lesson). Each subagent receives the full SKILL.md content and its lesson data, and writes output files directly
-- Drive output is routed by folder type: lesson plan docs → `Lesson Plans/` subfolder; worksheet and answer key docs → `Worksheets/` subfolder. Discover subfolder IDs dynamically at runtime (Step 5)
+- Graphic Organizer generation (subagents C and D) runs after lesson plan subagents A and B complete, since organizers are derived from the generated lesson plan text; organizer subagents are launched in parallel with Step 5 (Drive folder discovery)
+- Drive output is routed by folder type: lesson plan docs → `Lesson Plans/` subfolder; worksheet and answer key docs → `Worksheets/` subfolder; graphic organizer docs → `Lesson Plans/` subfolder. Discover subfolder IDs dynamically at runtime (Step 5)
 - Worksheet and answer key docs always use 14pt Arial font (`--font-size 14 --font-family Arial`)
+- `write_organizer.py` does NOT update state.json — state is only updated by `write_doc.py` Step 6
