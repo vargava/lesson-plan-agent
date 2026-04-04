@@ -52,41 +52,16 @@ Produce the following sections in order. Every section must be completed — no 
 
 ---
 
-### 2. Learning Objectives
-Write 1–3 clear, measurable objectives. Each objective must:
-- Begin with a specific action verb (e.g., "Students will be able to calculate...", not "Students will understand...")
-- Connect directly to the standard(s) listed in the header
-- Map explicitly to what the exit ticket will assess
-
-**Inline notes:**
-- [EN] — Objectives as written
-- [ES] — Restate objectives in Spanish. Do not translate mechanically. Write them as a Spanish-speaking teacher would naturally phrase them for their students.
-- [MX] — Post both English and Spanish objectives side by side (as they would appear on the board). Then write one sentence anchor per objective — a bilingual fill-in-the-blank stem that distills the core mathematical takeaway of that objective (e.g., "When I add a negative number, I move _____ on the number line." / "Cuando sumo un número negativo, me muevo _____ en la recta numérica."). These anchors should be memorable, mathematically precise, and usable by students across proficiency levels.
-
----
-
-### 3. Vocabulary / Key Terms
-List all math vocabulary terms that are essential to this lesson. For each term:
-- Provide a student-friendly definition (not a textbook definition)
-- Write one example sentence showing the term used in context
-- Note how and when the term will be introduced during the lesson (not just listed at the start and forgotten)
-
-**Inline notes:**
-- [ES] — Provide the Spanish equivalent term and a student-friendly definition written entirely in Spanish — not in English. Do not write "In English, this means..." or include an English gloss alongside the Spanish. Flag any terms that are false cognates or commonly confused in translation.
-- [MX] — Note which terms benefit from a visual, gesture, or graphic organizer to support mixed proficiency learners.
-
----
-
-### 4. Materials & Resources
+### 2. Materials & Resources
 List everything the teacher needs to run this lesson:
 - Physical materials (e.g., graph paper, rulers, whiteboards)
 - Digital tools or platforms, if applicable
-- Any handouts or worksheets implied by the lesson activities
+- Any handouts or worksheets implied by the lesson activities. Reference materials by their names from the curriculum source; do not invent content for physical worksheets you have not seen. Lesson activities must be self-contained — do not rely on assumed worksheet content.
 - The source curriculum document (unit and lesson reference)
 
 ---
 
-### 5. Lesson Body (75 minutes)
+### 3. Lesson Body (75 minutes)
 
 Structure the 75 minutes explicitly. Label each block with its time allocation. The following pacing is a recommended default — adjust if the curriculum content demands it, but total time must equal 75 minutes.
 
@@ -96,7 +71,7 @@ Structure the 75 minutes explicitly. Label each block with its time allocation. 
 | Concept Introduction | Connect math to real-world context; introduce vocabulary | 15 min |
 | Guided Practice | Teacher-led worked examples with student participation | 20 min |
 | Independent / Partner Practice | Students apply the concept | 20 min |
-| Summary + Exit Ticket | Closure questions then formative assessment | 10 min |
+| Summary | Closure questions | 5 min |
 
 **Do Now format (required):** Write exactly three items for the Do Now prompt — do not use the previous lesson's exit ticket as the warm-up activity:
 1. Two mathematical equations or prompts that require students to use the knowledge and processes taught in the previous lesson
@@ -109,12 +84,18 @@ For **each block**, write:
 - What students do
 - Any discussion prompts or guiding questions
 
-**Inline notes appear within each block:**
-- [EN] — Standard instruction
-- [ES] — Describe how the instruction is delivered or modified in Spanish. This is not a translation of the English instruction. It should reflect how a skilled bilingual math teacher would actually run this block — including Spanish mathematical language, culturally relevant examples where appropriate, and language scaffolds like sentence frames or word walls.
-- [MX] — Describe specific strategies for the mixed proficiency context. This classroom has students at different language levels in the same room. Note grouping strategies, tiered question prompts, visual supports, or peer language modeling techniques.
+#### Bilingual Instruction Format (required throughout)
 
-**Language completeness requirement:** Every discussion prompt, debrief question, and teacher question written in an [EN] block must have corresponding [ES] and [MX] versions in the same time block. No block may contain discussion prompts or teacher questions only in [EN]. If [EN] has three discussion questions, [ES] and [MX] must each address all three — phrased appropriately for their respective context, not translated word-for-word.
+All teacher-facing script — what the teacher says to the class, discussion prompts, transitions, and closures — must be written bilingually inline: write the full English line, then the Spanish version immediately after. The Spanish is not a footnote; it is part of the primary instruction. Do not split a block into sequential [EN], [ES], and [MX] sub-sections.
+
+Example format:
+> "What does the equal sign mean in this equation?" "¿Qué significa el signo igual en esta ecuación?"
+
+Every block-to-block transition and conceptual bridge sentence ("We just established... now we're going to...") must include the Spanish version immediately after the English.
+
+**[MX] callout:** At the end of each block, include a single compact **[MX]** note describing classroom-specific strategies for the mixed proficiency context: grouping strategies, tiered question prompts, visual supports, peer language modeling. This is a brief callout — it should not repeat instruction already written in the main block.
+
+**Display and nonverbal instructions:** All display and nonverbal instructional moves must be written as specific action prompts naming the resource (e.g., "Display the Equivalent Expressions Intro problems on the projector one at a time" not "Display"). Single-word directives are not sufficient.
 
 #### Board Instructions (required in Independent / Partner Practice block)
 Every Independent/Partner Practice block must begin with a "Board Instructions" item: the exact text the teacher writes on the board or wall for students to reference during work time. Write it as literal board text, not a description of what to write (e.g., "Read 3 times. Solve 3 ways. Check with a partner." — not "Tell students to read carefully"). This text must be specific to the lesson's activity, not generic.
@@ -130,48 +111,52 @@ The script must also include the exact teacher language to use when a student sk
 #### Real-World Connection (required in Concept Introduction block)
 Every lesson must ground the math concept in a real-world context that is relevant and relatable to middle school students (ages 11–14). This is not a word problem bolted on at the end — it is the entry point for why the math matters. Choose contexts that are culturally neutral or broadly relatable (e.g., sports, food, money, social media, distances, time).
 
+The bilingual version of the real-world connection (both English and Spanish) must appear in the main instruction before the Think-Pair-Share or group discussion that follows it — not after.
+
 #### Worked Example (required in Guided Practice block)
-Before transitioning to group or partner work within Guided Practice, include at least one problem worked out step-by-step in full — every step written explicitly, with the teacher narration for each step. Do not summarize steps or write "solve as shown." A substitute teacher picking up this lesson plan must be able to work through the example using only what is written here.
+Before transitioning to group or partner work within Guided Practice, include at least one problem worked out step-by-step in full — every step written explicitly, with the teacher narration for each step in both English and Spanish. Do not summarize steps or write "solve as shown." A substitute teacher picking up this lesson plan must be able to work through the example using only what is written here.
+
+When a board diagram is required (e.g., an area model, a number line, a balance scale), explicitly name the type of model in the bracket instruction and describe it precisely enough that a teacher can draw it from the text alone — no graphic is available in this output format. Example: `[Draw area model on board: a rectangle with width 5 and total length labeled (20 + 3), divided into two sections — the left section labeled 5×20 and the right section labeled 5×3. Write the total area equation below: 5(20+3) = (5×20)+(5×3) = 115.]`
 
 #### Anticipated Misconceptions (required in Guided Practice block)
 Identify 2–3 specific places where students commonly get confused or make errors on this concept. For each:
 - Name the misconception
 - Explain why students tend to make this error
-- Describe what the teacher should say or do to address it in the moment
+- Write the teacher response in the moment — in both English and Spanish. The response must use language that directly echoes how the student experienced the error, not introduce a new representation or model unless it directly and simply resolves the confusion. First acknowledge the student's logic, then show specifically where it breaks down.
+
+Example format for each misconception:
+> **Teacher response (EN):** "I can see why that looks right — it does say 4 times 3. But the 4 has to multiply everything inside the parentheses — not just the first number. It's 4 times 3 and 4 times 5."
+> **Teacher response (ES/bilingual):** "Entiendo por qué parece correcto — sí dice 4 por 3. Pero el 4 tiene que multiplicar todo lo que está adentro del paréntesis, no solo el primer número. Es 4 por 3 y también 4 por 5."
 
 #### Summary / Closure (required in Block 5)
 
-Block 5 is labeled "BLOCK 5 — SUMMARY + EXIT TICKET (10 minutes)" and opens with a 2-minute closure sequence before the exit ticket is distributed.
+Block 5 is labeled "BLOCK 5 — SUMMARY (5 minutes)" and consists of a brief closure sequence before the exit ticket is distributed separately as Block 6.
 
 The closure sequence must include:
-- A 1–2 sentence teacher wrap-up statement naming the key mathematical idea from today's lesson and explicitly bridging to the next lesson
-- 2–3 discussion questions for cold-calling that check conceptual understanding, not procedure (e.g., "When does dividing give a smaller result?" not "What is 10÷2?")
+- A 1–2 sentence bilingual teacher wrap-up statement naming the key mathematical idea from today's lesson and explicitly bridging to the next lesson
+- 2–3 bilingual discussion questions for cold-calling that check conceptual understanding, not procedure (e.g., "When does dividing give a smaller result?" not "What is 10÷2?")
 
-Write the discussion questions in full — the exact words the teacher will say.
+Write the discussion questions in full — the exact words the teacher will say, in both English and Spanish.
 
-**Inline notes:**
-- [ES] — Wrap-up statement and discussion questions in Spanish, written as a fluent Spanish-language teacher would say them
-- [MX] — Bilingual versions of the closure questions using the paired format established in Block 1
-
-Total block time remains 10 minutes (~2 minutes closure + ~8 minutes exit ticket).
+**[MX]** callout: bilingual versions of the closure questions in the paired format used throughout the block.
 
 ---
 
-### 6. Exit Ticket
+### 4. Exit Ticket
 Write the exact exit ticket — 1 to 3 problems or prompts that the teacher can hand to students or display in the final 10 minutes.
 
 Requirements:
-- The exit ticket must directly assess the learning objective(s) stated in Section 2. If the objective changed during planning, update Section 2 to match.
+- The exit ticket must directly assess the learning objectives stated in the Lesson Synopsis. If the objectives change during planning, update the Synopsis to match.
 - Problems should be completable in 10 minutes by a middle schooler working independently
 - At least one item should require the student to show or explain their reasoning, not just produce an answer
 
 **Inline notes:**
-- [ES] — Provide the exit ticket prompts in Spanish. Again, this is not a direct translation — write it as a Spanish-language math teacher would naturally phrase the assessment.
+- [ES] — Provide the exit ticket prompts in Spanish. This is not a direct translation — write it as a Spanish-language math teacher would naturally phrase the assessment.
 - [MX] — Note any language scaffolds on the exit ticket itself (e.g., sentence starters, a word bank, a visual prompt) that support mixed proficiency students without compromising the rigor of the assessment.
 
 ---
 
-### 7. Extension Worksheet
+### 5. Extension Worksheet
 
 Each lesson produces two separate worksheet outputs — a student copy and an answer key. Both are standalone, printable documents.
 
@@ -202,28 +187,57 @@ Worksheet docs (student copy and answer key) are written with 14pt Arial font. W
 
 ---
 
+### 6. Lesson Synopsis
+
+This section appears at the **end** of the lesson plan output — after the exit ticket, before the extension worksheet. It is a compact one-page reference containing three items:
+
+#### Learning Objectives
+Write 1–3 clear, measurable objectives. Each objective must:
+- Begin with a specific action verb (e.g., "Students will be able to calculate...", not "Students will understand...")
+- Connect directly to the standard(s) listed in the header
+- Map explicitly to what the exit ticket assessed
+
+Write each objective in English, then immediately in Spanish (same paragraph). Then write a compact [MX] board version: both languages side by side as they would appear posted on the wall, with one sentence stem anchor per objective (a bilingual fill-in-the-blank that distills the mathematical takeaway).
+
+#### Sentence Stems
+List 2–3 bilingual sentence stems students can use when explaining their reasoning. Write each as: English / Spanish on the same line.
+
+#### Vocabulary
+List all math vocabulary terms essential to this lesson. For each term:
+- Student-friendly definition in English
+- Spanish equivalent and student-friendly definition in Spanish (written as a Spanish-speaking teacher would phrase it — not a direct translation)
+- One example sentence in context
+- When the term is introduced during the lesson
+- Flag any false cognates or terms commonly confused in translation
+
+**Note:** Vocabulary terms must be actively used within the lesson body, not only listed here. If a term only appears in this synopsis, it was not taught — revise the lesson body.
+
+---
+
 ## Quality Standards
 
-The agent must self-evaluate the lesson plan against these standards before finalizing output. Do not produce the document if any of the following are not met.
+The agent must self-evaluate the lesson plan against these standards before finalizing output. **Perform these checks internally. Do NOT write the quality check list to the output file** — it is for self-evaluation only.
 
 ### Must pass all of the following:
-- [ ] Every learning objective connects to a specific activity in the lesson body
-- [ ] The exit ticket assesses exactly what was taught — nothing more, nothing less
-- [ ] Vocabulary terms appear and are actively used within the lesson body, not only listed in Section 3
-- [ ] The real-world context is introduced before or during concept instruction, not appended as a word problem
-- [ ] At least 2 anticipated misconceptions are identified with teacher response guidance
-- [ ] [ES] content reflects authentic Spanish-language math instruction — not machine translation or word-for-word English conversion
-- [ ] [MX] content treats the mixed proficiency classroom as its own distinct instructional context, not a copy of either EN or ES
-- [ ] Pacing blocks are labeled with explicit time allocations that sum to exactly 75 minutes
-- [ ] Block 5 is labeled "SUMMARY + EXIT TICKET" and includes 2–3 closure discussion questions before the exit ticket is distributed
-- [ ] Extension worksheet (student copy) contains 8–10 complete, numbered problems including at least 2 word problems and 1 challenge problem; answer key is generated as a separate file
+- Every learning objective connects to a specific activity in the lesson body
+- The exit ticket assesses exactly what was taught — nothing more, nothing less
+- Vocabulary terms appear and are actively used within the lesson body, not only listed in the Synopsis
+- The real-world context is introduced before or during concept instruction, not appended as a word problem
+- At least 2 anticipated misconceptions are identified, each with a bilingual teacher response (EN + ES)
+- All teacher-facing script lines are bilingual inline — no block contains discussion prompts only in English
+- [MX] content treats the mixed proficiency classroom as its own distinct instructional context, not a copy of either EN or ES
+- Pacing blocks are labeled with explicit time allocations that sum to exactly 75 minutes
+- Learning objectives and vocabulary appear in the Lesson Synopsis at the END of the output, not at the top
+- Extension worksheet (student copy, Section 5) contains 8–10 complete, numbered problems including at least 2 word problems and 1 challenge problem; answer key is generated as a separate file
 
 ### Common failure modes to actively avoid:
 - Objectives that use vague verbs like "understand," "appreciate," or "explore" without a measurable action
 - An exit ticket that tests a concept adjacent to — but not identical to — the stated objective
 - Spanish scaffolding that reads as translated English rather than naturally spoken instructional Spanish
-- Vocabulary listed once in Section 3 and never referenced again in the lesson body
+- Vocabulary listed once in the Synopsis and never referenced again in the lesson body
 - The mixed proficiency classroom receiving identical instruction to either the EN or ES classroom with only surface-level changes
+- Misconception teacher responses that introduce a new representation without directly addressing the student's specific error
+- Block-to-block transition sentences left in English only without a Spanish version
 
 ---
 
@@ -239,3 +253,25 @@ This skill is run once per week, two lessons per run. The agent does not need to
 
 ## Feedback & Updates
 This skill is updated via the Assessor Feedback Workflow documented in CLAUDE.md. When an assessor leaves comments on an output Google Doc, run that workflow to fetch the comments, interpret the feedback, and incorporate it into this file as durable instructions.
+
+
+## Reference Documents
+
+Each unit has a "Reference Docs" folder in Drive (sibling to the unit spreadsheet). These documents are provided by the teacher and handed to students as-is — do not recreate them. Use them as inputs to inform what you generate.
+
+### Exit Ticket (ET) files
+- Named with "ET" in the filename, one per lesson
+- These are the actual worksheets students complete at the end of class
+- **When an ET file is provided for your lesson:** use it as a reference to understand what concepts and problem types the teacher expects students to demonstrate. Your lesson plan's exit ticket section should cover at least the same concepts and may include additional problems that expand on the concept. The lesson body must prepare students to succeed on the ET problems.
+- Do not reproduce the ET verbatim in the lesson plan — use it as context for scoping the exit ticket and the lesson body.
+
+### Assessments folder
+A subfolder named "assessments" inside Reference Docs contains three documents:
+- **Pre Assessment** — administered before the unit launches (before prerequisite lessons). Identifies students' prior knowledge. Not a lesson plan.
+- **Checkpoint** — administered at the unit's halfway point (typically after lesson 5 or 6 of a 10–12 lesson unit). Not a lesson plan.
+- **Post Assessment** — administered after the final numbered lesson. Not a lesson plan.
+
+These three documents are individual class days treated as lessons in the sequence, but they do not have lesson tabs in the unit spreadsheet. You do not produce lesson plans for them. Use them as context only — e.g., if a lesson falls just before the checkpoint, make sure the lesson body explicitly prepares students for that assessment.
+
+### Other reference materials
+Other files in Reference Docs (e.g., standard sample tasks, intro worksheets, curriculum PDFs) are supporting materials. Reference them by name in the Materials & Resources section if the lesson calls for them. Do not assume their content — lesson activities must be self-contained.
