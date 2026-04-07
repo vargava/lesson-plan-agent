@@ -29,6 +29,8 @@ Additionally maintain a document that records the main structure you're interpre
 
 The lesson plan covers **one 75-minute class period** and is written for **three classroom types inline** — meaning all three audiences appear within a single unified document, with clearly labeled inline notes distinguishing how the lesson differs for each group rather than producing three separate documents.
 
+**Color-coding contract:** The output pipeline renders `[EN]` sections in blue, `[ES]` sections in green, and `[MX]` sections in orange. These markers must appear in the output text exactly as written here — they are not decorative labels; they control the visual formatting of the final Google Doc. Spanish text that is not preceded by an `[ES]` marker will not render in green.
+
 ### The three classroom types are:
 - **English (EN)** — Native English-speaking students, standard instruction
 - **Spanish ELL (ES)** — English Language Learners being taught in Spanish; requires true language scaffolding, not direct translation
@@ -73,6 +75,8 @@ Structure the 75 minutes explicitly. Label each block with its time allocation. 
 | Independent / Partner Practice | Students apply the concept | 20 min |
 | Summary | Closure questions | 5 min |
 
+**Creative generation is expected and encouraged.** The curriculum source provides standards, objectives, vocabulary, and pacing guidance — it does not supply every example problem, real-world scenario, or discussion prompt the lesson needs. Generate original problems, varied examples, and diverse real-world contexts that serve the learning objectives. The constraint in Section 2 against inventing worksheet content applies only to physical handouts explicitly referenced by name in the curriculum (e.g., "Lesson 3 Exit Ticket") that were not provided as reference materials — not to the examples, practice problems, and scenarios you write directly into the lesson plan.
+
 **Do Now format (required):** Write exactly three items for the Do Now prompt — do not use the previous lesson's exit ticket as the warm-up activity:
 1. Two mathematical equations or prompts that require students to use the knowledge and processes taught in the previous lesson
 2. One equation or exercise that previews a key skill or concept from today's lesson
@@ -86,12 +90,18 @@ For **each block**, write:
 
 #### Bilingual Instruction Format (required throughout)
 
-All teacher-facing script — what the teacher says to the class, discussion prompts, transitions, and closures — must be written bilingually inline: write the full English line, then the Spanish version immediately after. The Spanish is not a footnote; it is part of the primary instruction. Do not split a block into sequential [EN], [ES], and [MX] sub-sections.
+All teacher-facing script — what the teacher says to the class, discussion prompts, transitions, and closures — must be written bilingually using alternating `[EN]` and `[ES]` markers for every pair. Place `[EN]` before the English line and `[ES]` before the Spanish line. This is what drives the color distinction in the output doc — **Spanish text MUST be preceded by `[ES]` to render in green; English text preceded by `[EN]` renders in blue.** The Spanish is not a footnote; it is part of the primary instruction.
 
 Example format:
-> "What does the equal sign mean in this equation?" "¿Qué significa el signo igual en esta ecuación?"
+```
+[EN]
+Teacher: What does the equal sign mean in this equation?
+[ES]
+Teacher: ¿Qué significa el signo igual en esta ecuación?
+[EN]
+```
 
-Every block-to-block transition and conceptual bridge sentence ("We just established... now we're going to...") must include the Spanish version immediately after the English.
+Do NOT write the entire block three times (one full [EN] pass, then full [ES] pass, then full [MX] pass) — that is not the format. The markers are per-line-pair within a unified block. Every block-to-block transition and conceptual bridge sentence must follow the same alternating pattern.
 
 **[MX] callout:** At the end of each block, include a single compact **[MX]** note describing classroom-specific strategies for the mixed proficiency context: grouping strategies, tiered question prompts, visual supports, peer language modeling. This is a brief callout — it should not repeat instruction already written in the main block.
 
@@ -138,7 +148,7 @@ The closure sequence must include:
 
 Write the discussion questions in full — the exact words the teacher will say, in both English and Spanish.
 
-**[MX]** callout: bilingual versions of the closure questions in the paired format used throughout the block.
+**[MX]** callout: bilingual versions of the closure questions in the alternating `[EN]`/`[ES]` paired format used throughout the block.
 
 ---
 
@@ -151,7 +161,7 @@ Requirements:
 - At least one item should require the student to show or explain their reasoning, not just produce an answer
 
 **Inline notes:**
-- [ES] — Provide the exit ticket prompts in Spanish. This is not a direct translation — write it as a Spanish-language math teacher would naturally phrase the assessment.
+- Use alternating `[EN]`/`[ES]` markers to present each exit ticket prompt in both languages. Write the Spanish version as a Spanish-language math teacher would naturally phrase it — not a direct translation.
 - [MX] — Note any language scaffolds on the exit ticket itself (e.g., sentence starters, a word bank, a visual prompt) that support mixed proficiency students without compromising the rigor of the assessment.
 
 ---
@@ -166,8 +176,8 @@ Write the actual worksheet in full, ready to print. Requirements:
 
 - Header row: `Name: ___________________________  Date: __________  Period: ___`
 - One short Directions line (e.g. "Show your work. For word problems, write a complete sentence answer.")
-- 8–10 numbered problems, arranged in increasing difficulty
-- 2–3 word problems that require multi-step reasoning
+- 8–10 numbered problems, arranged in increasing difficulty — vary the problem types, numbers, and real-world contexts; do not merely restate problems from the lesson body
+- 2–3 word problems that require multi-step reasoning, using contexts different from the ones used in the lesson body
 - 1–2 challenge problems that push toward the next concept in the unit sequence, clearly marked (e.g., "Challenge:")
 - Use only vocabulary and operations introduced in this lesson or prior lessons
 - **No labeled answer areas** — do not add boxes or lines labeled "Equation:", "Solution:", "Answer:", etc. Leave generous blank lines below each problem for students to work freely
